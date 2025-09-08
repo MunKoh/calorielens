@@ -56,13 +56,14 @@ const SettingsButton = styled.button`
 
 
 const MainCalorieSection = styled.div`
-  background: linear-gradient(135deg, #3F72AF 0%, #112D4E 100%);
+  background: linear-gradient(135deg, ${props => props.theme.colors.primary} 0%, ${props => props.theme.colors.primaryDark} 100%);
   padding: ${props => props.theme.spacing.md};
-  border-radius: 12px;
+  border-radius: 16px;
   color: white;
   margin-bottom: ${props => props.theme.spacing.md};
-  box-shadow: 0 2px 12px rgba(63, 114, 175, 0.2);
+  box-shadow: ${props => props.theme.shadows.medium};
   position: relative;
+  backdrop-filter: blur(10px);
 `;
 
 
@@ -133,7 +134,7 @@ const CalorieProgressBar = styled.div`
 const CalorieProgressFill = styled.div<{ $percentage: number }>`
   height: 100%;
   width: ${props => Math.min(props.$percentage, 100)}%;
-  background: linear-gradient(90deg, #DBE2EF, #F9F7F7);
+  background: linear-gradient(90deg, ${props => props.theme.colors.secondary}, #FFFFFF);
   border-radius: 8px;
   transition: width 0.8s ease;
   position: relative;
@@ -146,7 +147,7 @@ const CalorieProgressText = styled.div`
   transform: translate(-50%, -50%);
   font-size: 0.7rem;
   font-weight: 700;
-  color: #112D4E;
+  color: ${props => props.theme.colors.primaryDark};
   z-index: 2;
 `;
 
@@ -173,7 +174,7 @@ const CalorieStatLabel = styled.div`
 const CalorieStatValue = styled.div<{ $isGreen?: boolean }>`
   font-size: 0.9rem;
   font-weight: 700;
-  color: ${props => props.$isGreen ? '#DBE2EF' : 'white'};
+  color: ${props => props.$isGreen ? props.theme.colors.secondary : 'white'};
 `;
 
 const CalorieInfoItem = styled.div`
@@ -786,16 +787,17 @@ const NutritionGrid = styled.div`
 `;
 
 const NutritionCard = styled.div<{ type: 'carbs' | 'protein' | 'fat' }>`
-  background: #F9F7F7;
-  border: 1px solid #DBE2EF;
-  border-radius: 12px;
+  background: ${props => props.theme.colors.cardBg};
+  border: 1px solid ${props => props.theme.colors.secondary};
+  border-radius: 16px;
   padding: ${props => props.theme.spacing.md};
-  box-shadow: 0 2px 8px rgba(63, 114, 175, 0.08);
-  transition: all 0.2s ease;
+  box-shadow: ${props => props.theme.shadows.small};
+  transition: all 0.3s ease;
   
   &:hover {
-    box-shadow: 0 4px 12px rgba(63, 114, 175, 0.12);
-    transform: translateY(-1px);
+    box-shadow: ${props => props.theme.shadows.medium};
+    transform: translateY(-2px);
+    border-color: ${props => props.theme.colors.primaryLight};
   }
 `;
 
@@ -852,12 +854,12 @@ const NutritionCardTitle = styled.h4<{ type: 'carbs' | 'protein' | 'fat' }>`
   font-size: 0.85rem;
   font-weight: 600;
   margin: 0;
-  color: #112D4E;
+  color: ${props => props.theme.colors.text};
 `;
 
 const NutritionCardValue = styled.div`
   font-size: 0.8rem;
-  color: #3F72AF;
+  color: ${props => props.theme.colors.primaryLight};
   font-weight: 500;
 `;
 
@@ -895,7 +897,7 @@ const NutritionProgressContainer = styled.div`
 const NutritionProgressBar = styled.div`
   width: 100%;
   height: 12px;
-  background: #DBE2EF;
+  background: ${props => props.theme.colors.secondary};
   border-radius: 6px;
   overflow: hidden;
   position: relative;
@@ -905,8 +907,8 @@ const NutritionProgressFill = styled.div<{ $percentage: number; $isOver?: boolea
   height: 100%;
   width: ${props => Math.min(props.$percentage, 100)}%;
   background: ${props => {
-    if (props.$isOver) return 'linear-gradient(90deg, #ef4444, #dc2626)';
-    return 'linear-gradient(90deg, #3F72AF, #112D4E)';
+    if (props.$isOver) return `linear-gradient(90deg, ${props.theme.colors.error}, #dc2626)`;
+    return `linear-gradient(90deg, ${props.theme.colors.primary}, ${props.theme.colors.primaryDark})`;
   }};
   border-radius: 6px;
   transition: width 0.6s ease;
@@ -939,14 +941,14 @@ const NutritionStatItem = styled.div`
 
 const NutritionStatLabel = styled.div`
   font-size: 0.65rem;
-  color: #3F72AF;
+  color: ${props => props.theme.colors.primaryLight};
   font-weight: 500;
 `;
 
 const NutritionStatValue = styled.div<{ $isGreen?: boolean }>`
   font-size: 0.8rem;
   font-weight: 600;
-  color: ${props => props.$isGreen ? '#3F72AF' : '#112D4E'};
+  color: ${props => props.$isGreen ? props.theme.colors.primaryLight : props.theme.colors.text};
 `;
 
 // 종합 기록 섹션
@@ -957,7 +959,7 @@ const ComprehensiveRecordWrapper = styled.div`
 const ComprehensiveRecordTitle = styled.h3`
   font-size: 1rem;
   font-weight: 600;
-  color: #112D4E;
+  color: ${props => props.theme.colors.text};
   margin: 0 0 ${props => props.theme.spacing.md} 0;
 `;
 
@@ -1706,11 +1708,12 @@ const DailyCalorieTracker: React.FC<DailyCalorieTrackerProps> = ({ dailyIntake, 
 
       {/* AI 조언 섹션 */}
       <div style={{ 
-        background: 'linear-gradient(135deg, #DBE2EF 0%, #F9F7F7 100%)',
-        borderRadius: '12px',
-        padding: '16px',
+        background: 'linear-gradient(135deg, #CBDCEB 0%, #FFFFFF 100%)',
+        borderRadius: '16px',
+        padding: '20px',
         marginBottom: '16px',
-        border: '1px solid #3F72AF'
+        border: '1px solid #133E87',
+        boxShadow: '0 1px 3px rgba(19, 62, 135, 0.08)'
       }}>
         <div style={{ 
           display: 'flex', 
@@ -1719,21 +1722,22 @@ const DailyCalorieTracker: React.FC<DailyCalorieTrackerProps> = ({ dailyIntake, 
           marginBottom: '12px' 
         }}>
           <div style={{ 
-            background: '#3F72AF', 
+            background: '#133E87', 
             color: 'white', 
             borderRadius: '50%', 
-            width: '32px', 
-            height: '32px', 
+            width: '36px', 
+            height: '36px', 
             display: 'flex', 
             alignItems: 'center', 
             justifyContent: 'center',
-            fontSize: '1rem'
+            fontSize: '1.1rem',
+            boxShadow: '0 2px 8px rgba(19, 62, 135, 0.2)'
           }}>🤖</div>
           <h4 style={{ 
             margin: '0', 
-            color: '#112D4E', 
-            fontSize: '1rem', 
-            fontWeight: '600' 
+            color: '#133E87', 
+            fontSize: '1.1rem', 
+            fontWeight: '700' 
           }}>AI 영양 코치</h4>
         </div>
         
@@ -1743,20 +1747,22 @@ const DailyCalorieTracker: React.FC<DailyCalorieTrackerProps> = ({ dailyIntake, 
           marginBottom: '12px',
           flexWrap: 'wrap'
         }}>
-          <span style={{ fontSize: '0.8rem', color: '#3F72AF', fontWeight: '500' }}>목표:</span>
+          <span style={{ fontSize: '0.8rem', color: '#608BC1', fontWeight: '500' }}>목표:</span>
           {['muscle', 'diet', 'health'].map((goal) => (
             <button
               key={goal}
               onClick={() => handleGoalChangeWithRecommendation(goal as any)}
               style={{
-                background: nutritionGoal === goal ? '#3F72AF' : 'white',
-                color: nutritionGoal === goal ? 'white' : '#112D4E',
-                border: `1px solid #3F72AF`,
-                borderRadius: '16px',
-                padding: '4px 12px',
+                background: nutritionGoal === goal ? '#133E87' : 'white',
+                color: nutritionGoal === goal ? 'white' : '#133E87',
+                border: `1px solid #133E87`,
+                borderRadius: '20px',
+                padding: '6px 14px',
                 fontSize: '0.75rem',
                 fontWeight: '600',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                boxShadow: nutritionGoal === goal ? '0 2px 6px rgba(19, 62, 135, 0.2)' : 'none'
               }}
             >
               {goal === 'muscle' ? '💪 근육증가' : goal === 'diet' ? '🔥 다이어트' : '🌿 건강식단'}
@@ -1766,9 +1772,10 @@ const DailyCalorieTracker: React.FC<DailyCalorieTrackerProps> = ({ dailyIntake, 
         
         <p style={{ 
           margin: '0', 
-          color: '#112D4E', 
+          color: '#133E87', 
           fontSize: '0.9rem', 
-          lineHeight: '1.5' 
+          lineHeight: '1.6',
+          fontWeight: '500'
         }}>
           {generateAIAdvice()}
         </p>

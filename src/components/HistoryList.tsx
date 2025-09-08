@@ -59,59 +59,67 @@ interface NutritionGoals {
 }
 
 const HistoryContainer = styled.div`
-  margin-top: ${props => props.theme.spacing.xl};
+  background-color: ${props => props.theme.colors.cardBg};
+  border-radius: ${props => props.theme.borderRadius.large};
+  box-shadow: ${props => props.theme.shadows.medium};
+  padding: ${props => props.theme.spacing.lg};
+  margin-top: ${props => props.theme.spacing.lg};
+  transition: all 0.3s ease;
 `;
 
 const HistoryHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: ${props => props.theme.spacing.lg};
+  margin-bottom: ${props => props.theme.spacing.md};
 `;
 
 const HistoryTitle = styled.h2`
   color: ${props => props.theme.colors.text};
   margin: 0;
+  font-size: 1.5rem;
 `;
 
 const ClearAllButton = styled.button`
-  background-color: transparent;
-  color: ${props => props.theme.colors.textLight};
-  border: 1px solid ${props => props.theme.colors.textLight};
-  padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.md};
+  background: ${props => props.theme.colors.primary};
+  color: white;
+  border: none;
+  padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.sm};
   border-radius: ${props => props.theme.borderRadius.small};
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   cursor: pointer;
+  font-weight: 600;
   transition: all 0.2s ease;
   
   &:hover {
-    background-color: #f8f8f8;
-    color: ${props => props.theme.colors.error};
-    border-color: ${props => props.theme.colors.error};
+    background: ${props => props.theme.colors.primaryDark};
+    transform: translateY(-1px);
   }
 `;
 
 const HistoryCardsList = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: ${props => props.theme.spacing.lg};
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: ${props => props.theme.spacing.sm};
   
   @media (max-width: ${props => props.theme.breakpoints.mobile}) {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
   }
 `;
 
 const HistoryCard = styled.div`
-  background-color: ${props => props.theme.colors.cardBg};
-  border-radius: ${props => props.theme.borderRadius.large};
-  box-shadow: ${props => props.theme.shadows.medium};
+  background: ${props => props.theme.colors.cardBg};
+  border: 1px solid ${props => props.theme.colors.secondary};
+  border-radius: 16px;
   overflow: hidden;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: all 0.3s ease;
   position: relative;
+  box-shadow: ${props => props.theme.shadows.small};
   
   &:hover {
-    transform: translateY(-5px);
-    box-shadow: ${props => props.theme.shadows.large};
+    transform: translateY(-2px);
+    box-shadow: ${props => props.theme.shadows.medium};
+    border-color: ${props => props.theme.colors.primaryLight};
   }
 `;
 
@@ -150,84 +158,87 @@ const DeleteButton = styled.button`
 `;
 
 const HistoryImage = styled.div<{ imageUrl: string }>`
-  height: 160px;
+  height: 100px;
   background-image: url(${props => props.imageUrl});
   background-size: cover;
   background-position: center;
 `;
 
 const HistoryInfo = styled.div`
-  padding: ${props => props.theme.spacing.md};
+  padding: ${props => props.theme.spacing.sm};
 `;
 
 const HistoryDate = styled.p`
   margin: 0;
-  color: ${props => props.theme.colors.textLight};
-  font-size: 0.9rem;
+  color: ${props => props.theme.colors.primaryLight};
+  font-size: 0.7rem;
+  font-weight: 500;
 `;
 
 const HistoryCalories = styled.p`
   margin: ${props => props.theme.spacing.xs} 0 0;
   font-weight: 700;
-  color: ${props => props.theme.colors.primaryDark};
-  font-size: 1.1rem;
+  color: ${props => props.theme.colors.text};
+  font-size: 0.9rem;
 `;
 
 const FoodsList = styled.ul`
-  margin: ${props => props.theme.spacing.sm} 0 0;
+  margin: ${props => props.theme.spacing.xs} 0 0;
   padding: 0;
   list-style: none;
-  font-size: 0.85rem;
+  font-size: 0.7rem;
   color: ${props => props.theme.colors.text};
+  max-height: 60px;
+  overflow: hidden;
 `;
 
 const FoodItemLi = styled.li`
   margin: 0;
-  padding: ${props => props.theme.spacing.xs} 0;
+  padding: 2px 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
   
   &:not(:last-child) {
-    border-bottom: 1px dashed ${props => props.theme.colors.secondaryLight};
+    border-bottom: 1px dashed ${props => props.theme.colors.secondary};
   }
 `;
 
 const FoodItemInfo = styled.div`
   flex: 1;
+  overflow: hidden;
 `;
 
 const FoodItemCalories = styled.span`
   font-weight: 600;
-  color: ${props => props.theme.colors.primaryDark};
-  font-size: 0.9rem;
+  color: ${props => props.theme.colors.primaryLight};
+  font-size: 0.7rem;
 `;
 
 const NutritionSummary = styled.div`
-  margin-top: ${props => props.theme.spacing.md};
-  padding-top: ${props => props.theme.spacing.md};
-  border-top: 1px solid ${props => props.theme.colors.secondaryLight};
-  display: flex;
-  justify-content: space-around;
-  background-color: ${props => props.theme.colors.secondaryLight + '20'};
-  border-radius: ${props => props.theme.borderRadius.small};
-  padding: ${props => props.theme.spacing.sm};
+  margin-top: ${props => props.theme.spacing.xs};
+  padding-top: ${props => props.theme.spacing.xs};
+  border-top: 1px solid ${props => props.theme.colors.secondary};
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
 `;
 
 const NutrientItem = styled.div`
   text-align: center;
-  font-size: 0.8rem;
+  font-size: 0.6rem;
 `;
 
 const NutrientValue = styled.div`
   font-weight: 600;
-  color: ${props => props.theme.colors.primary};
-  font-size: 0.9rem;
+  color: ${props => props.theme.colors.primaryLight};
+  font-size: 0.7rem;
 `;
 
 const NutrientLabel = styled.div`
-  color: ${props => props.theme.colors.textLight};
-  margin-top: 2px;
+  color: ${props => props.theme.colors.primaryLight};
+  margin-top: 1px;
+  opacity: 0.8;
 `;
 
 const DateHeader = styled.div`
@@ -262,12 +273,14 @@ const DateSummary = styled.div`
 `;
 
 const DaySummaryCard = styled.div`
-  background: linear-gradient(135deg, #E8FFD7 0%, #FFFFFF 100%);
-  border-radius: ${props => props.theme.borderRadius.large};
-  padding: ${props => props.theme.spacing.lg};
+  background: linear-gradient(135deg, ${props => props.theme.colors.primary} 0%, ${props => props.theme.colors.primaryDark} 100%);
+  border-radius: 16px;
+  padding: ${props => props.theme.spacing.md};
   margin-bottom: ${props => props.theme.spacing.md};
-  border: 2px solid ${props => props.theme.colors.secondaryLight};
+  color: white;
   box-shadow: ${props => props.theme.shadows.medium};
+  position: relative;
+  backdrop-filter: blur(10px);
 `;
 
 const DaySummaryHeader = styled.div`
@@ -312,26 +325,29 @@ const SummaryToggleButton = styled.div`
 
 const CalorieBadge = styled.div<{ percentage: number }>`
   background: ${props => {
-    if (props.percentage > 110) return 'linear-gradient(45deg, #ff6b6b, #ee5a52)';
-    if (props.percentage >= 80) return 'linear-gradient(45deg, #93DA97, #5E936C)';
-    return 'linear-gradient(45deg, #ffa726, #ff9800)';
+    if (props.percentage > 100) return 'rgba(239, 68, 68, 0.9)';
+    return 'rgba(255, 255, 255, 0.2)';
   }};
   color: white;
-  padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.md};
-  border-radius: 20px;
-  font-weight: 700;
-  font-size: 1rem;
+  padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.sm};
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.8rem;
   display: flex;
   align-items: center;
   gap: 4px;
+  border: 1px solid ${props => {
+    if (props.percentage > 100) return 'rgba(239, 68, 68, 0.7)';
+    return 'rgba(255, 255, 255, 0.3)';
+  }};
   
   &::before {
     content: ${props => {
       if (props.percentage > 110) return '"⚠️"';
-      if (props.percentage >= 80) return '"✅"';
+      if (props.percentage >= 80) return '"🎯"';
       return '"⚡"';
     }};
-    font-size: 0.9rem;
+    font-size: 0.7rem;
   }
 `;
 
@@ -344,9 +360,9 @@ const ProgressBarContainer = styled.div`
 
 const ProgressBar = styled.div<{ percentage: number }>`
   flex: 1;
-  height: 8px;
-  background-color: ${props => props.theme.colors.secondaryLight};
-  border-radius: 4px;
+  height: 16px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
   overflow: hidden;
   position: relative;
   
@@ -358,117 +374,96 @@ const ProgressBar = styled.div<{ percentage: number }>`
     height: 100%;
     width: ${props => Math.min(props.percentage, 100)}%;
     background: ${props => {
-      if (props.percentage > 100) return 'linear-gradient(90deg, #ff6b6b, #ee5a52)';
-      if (props.percentage >= 80) return 'linear-gradient(90deg, #93DA97, #5E936C)';
-      return 'linear-gradient(90deg, #ffa726, #ff9800)';
+      if (props.percentage > 100) return `linear-gradient(90deg, ${props.theme.colors.error}, #dc2626)`;
+      return `linear-gradient(90deg, ${props.theme.colors.secondary}, #FFFFFF)`;
     }};
-    border-radius: 4px;
-    transition: width 0.3s ease;
+    border-radius: 8px;
+    transition: width 0.8s ease;
   }
 `;
 
-const ProgressText = styled.span`
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: ${props => props.theme.colors.text};
-  min-width: 45px;
-  text-align: right;
+const ProgressText = styled.span<{ percentage: number }>`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: ${props => props.percentage > 100 ? 'white' : props.theme.colors.primaryDark};
+  z-index: 2;
 `;
 
 const NutritionProgressGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: ${props => props.theme.spacing.md};
-  margin-top: ${props => props.theme.spacing.md};
+  gap: ${props => props.theme.spacing.sm};
+  margin-top: ${props => props.theme.spacing.sm};
 `;
 
 const NutritionProgressCard = styled.div<{ type: 'carbs' | 'protein' | 'fat' }>`
-  background: ${props => {
-    switch(props.type) {
-      case 'carbs': return 'linear-gradient(135deg, #93DA97, #5E936C)';
-      case 'protein': return 'linear-gradient(135deg, #E8FFD7, #93DA97)';
-      case 'fat': return 'linear-gradient(135deg, #5E936C, #3E5F44)';
-    }
-  }};
-  color: ${props => props.type === 'protein' ? props.theme.colors.text : 'white'};
-  padding: ${props => props.theme.spacing.md};
-  border-radius: ${props => props.theme.borderRadius.medium};
+  background: ${props => props.theme.colors.cardBg};
+  border: 1px solid ${props => props.theme.colors.secondary};
+  border-radius: 12px;
+  padding: ${props => props.theme.spacing.sm};
   text-align: center;
-  position: relative;
-  overflow: hidden;
+  box-shadow: ${props => props.theme.shadows.small};
+  transition: all 0.2s ease;
   
-  &::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    right: -50%;
-    width: 100%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    transform: rotate(45deg);
+  &:hover {
+    box-shadow: ${props => props.theme.shadows.medium};
+    transform: translateY(-1px);
+    border-color: ${props => props.theme.colors.primaryLight};
   }
 `;
 
 const NutritionIcon = styled.div`
-  font-size: 1.5rem;
+  font-size: 0.8rem;
   margin-bottom: ${props => props.theme.spacing.xs};
-  position: relative;
-  z-index: 1;
 `;
 
 const NutritionValue = styled.div`
-  font-size: 1.1rem;
-  font-weight: 700;
+  font-size: 0.8rem;
+  font-weight: 600;
   margin-bottom: ${props => props.theme.spacing.xs};
-  position: relative;
-  z-index: 1;
+  color: ${props => props.theme.colors.text};
 `;
 
 const NutritionLabel = styled.div`
-  font-size: 0.8rem;
-  opacity: 0.9;
+  font-size: 0.7rem;
+  color: ${props => props.theme.colors.primaryLight};
   font-weight: 500;
-  position: relative;
-  z-index: 1;
 `;
 
 const NutritionPercentage = styled.div<{ $isOver?: boolean }>`
-  font-size: 1.3rem;
-  font-weight: 800;
+  font-size: 0.9rem;
+  font-weight: 700;
   margin-bottom: ${props => props.theme.spacing.xs};
-  position: relative;
-  z-index: 1;
-  color: ${props => props.$isOver ? '#ff6b6b' : 'inherit'};
-  text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+  color: ${props => props.$isOver ? props.theme.colors.error : props.theme.colors.primaryLight};
 `;
 
 const NutritionTarget = styled.div`
-  font-size: 0.75rem;
-  opacity: 0.8;
+  font-size: 0.6rem;
+  color: ${props => props.theme.colors.primaryLight};
   margin-top: ${props => props.theme.spacing.xs};
-  position: relative;
-  z-index: 1;
+  opacity: 0.8;
 `;
 
 const NutritionProgressBar = styled.div<{ percentage: number; $isOver?: boolean }>`
   width: 100%;
-  height: 3px;
-  background: rgba(255, 255, 255, 0.3);
+  height: 4px;
+  background: ${props => props.theme.colors.secondary};
   border-radius: 2px;
   margin-top: ${props => props.theme.spacing.xs};
   overflow: hidden;
-  position: relative;
-  z-index: 1;
   
   &::after {
     content: '';
     display: block;
     height: 100%;
     width: ${props => Math.min(props.percentage, 100)}%;
-    background: ${props => props.$isOver ? '#ff6b6b' : 'rgba(255, 255, 255, 0.8)'};
+    background: ${props => props.$isOver ? props.theme.colors.error : `linear-gradient(90deg, ${props.theme.colors.primary}, ${props.theme.colors.primaryDark})`};
     border-radius: 2px;
-    transition: width 0.3s ease;
+    transition: width 0.6s ease;
   }
 `;
 
@@ -702,8 +697,9 @@ const HistoryList: React.FC<HistoryListProps> = ({ history, onItemClick, onDelet
                           </CalorieBadge>
                           <CalorieGoalProgress>
                             <ProgressBarContainer>
-                              <ProgressBar percentage={caloriePercentage} />
-                              <ProgressText>{caloriePercentage}%</ProgressText>
+                              <ProgressBar percentage={caloriePercentage}>
+                                <ProgressText percentage={caloriePercentage}>{caloriePercentage}%</ProgressText>
+                              </ProgressBar>
                             </ProgressBarContainer>
                           </CalorieGoalProgress>
                           <SummaryToggleButton>
@@ -722,45 +718,39 @@ const HistoryList: React.FC<HistoryListProps> = ({ history, onItemClick, onDelet
                               return (
                                 <>
                                   <NutritionProgressCard type="carbs">
-                                    <NutritionIcon>🍞</NutritionIcon>
-                                    <NutritionPercentage $isOver={dayNutrition.totalCarbs > nutritionGoals.carbs}>
-                                      {carbsPercentage}%
-                                    </NutritionPercentage>
-                                    <NutritionValue>{Math.round(dayNutrition.totalCarbs)}g</NutritionValue>
                                     <NutritionLabel>탄수화물</NutritionLabel>
-                                    <NutritionTarget>목표: {nutritionGoals.carbs}g</NutritionTarget>
+                                    <NutritionValue>{Math.round(dayNutrition.totalCarbs)}/{nutritionGoals.carbs}g</NutritionValue>
                                     <NutritionProgressBar 
                                       percentage={carbsPercentage}
                                       $isOver={dayNutrition.totalCarbs > nutritionGoals.carbs}
                                     />
+                                    <NutritionPercentage $isOver={dayNutrition.totalCarbs > nutritionGoals.carbs}>
+                                      {carbsPercentage}%
+                                    </NutritionPercentage>
                                   </NutritionProgressCard>
                                   
                                   <NutritionProgressCard type="protein">
-                                    <NutritionIcon>🥩</NutritionIcon>
-                                    <NutritionPercentage $isOver={dayNutrition.totalProtein > nutritionGoals.protein}>
-                                      {proteinPercentage}%
-                                    </NutritionPercentage>
-                                    <NutritionValue>{Math.round(dayNutrition.totalProtein)}g</NutritionValue>
                                     <NutritionLabel>단백질</NutritionLabel>
-                                    <NutritionTarget>목표: {nutritionGoals.protein}g</NutritionTarget>
+                                    <NutritionValue>{Math.round(dayNutrition.totalProtein)}/{nutritionGoals.protein}g</NutritionValue>
                                     <NutritionProgressBar 
                                       percentage={proteinPercentage}
                                       $isOver={dayNutrition.totalProtein > nutritionGoals.protein}
                                     />
+                                    <NutritionPercentage $isOver={dayNutrition.totalProtein > nutritionGoals.protein}>
+                                      {proteinPercentage}%
+                                    </NutritionPercentage>
                                   </NutritionProgressCard>
                                   
                                   <NutritionProgressCard type="fat">
-                                    <NutritionIcon>🥑</NutritionIcon>
-                                    <NutritionPercentage $isOver={dayNutrition.totalFat > nutritionGoals.fat}>
-                                      {fatPercentage}%
-                                    </NutritionPercentage>
-                                    <NutritionValue>{Math.round(dayNutrition.totalFat)}g</NutritionValue>
                                     <NutritionLabel>지방</NutritionLabel>
-                                    <NutritionTarget>목표: {nutritionGoals.fat}g</NutritionTarget>
+                                    <NutritionValue>{Math.round(dayNutrition.totalFat)}/{nutritionGoals.fat}g</NutritionValue>
                                     <NutritionProgressBar 
                                       percentage={fatPercentage}
                                       $isOver={dayNutrition.totalFat > nutritionGoals.fat}
                                     />
+                                    <NutritionPercentage $isOver={dayNutrition.totalFat > nutritionGoals.fat}>
+                                      {fatPercentage}%
+                                    </NutritionPercentage>
                                   </NutritionProgressCard>
                                 </>
                               );
