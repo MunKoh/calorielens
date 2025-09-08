@@ -2,6 +2,10 @@
   "name": "calorielens",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "18.x",
+    "npm": ">=8.0.0"
+  },
   "dependencies": {
     "@supabase/supabase-js": "^2.55.0",
     "@testing-library/dom": "^10.4.1",
