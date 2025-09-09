@@ -97,9 +97,20 @@ const analyzeWithAI = async (imageFile: File): Promise<FoodItem[]> => {
     });
 
     if (!response.ok) {
-      const errorData = await response.json();
-      console.error('서버 응답 오류:', errorData);
-      throw new Error(errorData.error || '서버에서 분석 요청을 처리하는 중 오류가 발생했습니다.');
+      // 서버에서 보낸 에러가 JSON 형태인지 확인
+      const contentType = response.headers.get('content-type');
+      let errorMessage = '서버에서 분석 요청을 처리하는 중 오류가 발생했습니다.';
+      
+      if (contentType && contentType.includes('application/json')) {
+        const errorData = await response.json();
+        errorMessage = errorData.error || errorMessage;
+      } else {
+        // JSON이 아닌 경우, 텍스트로 에러를 읽음
+        errorMessage = await response.text();
+      }
+      
+      console.error('서버 응답 오류:', errorMessage);
+      throw new Error(errorMessage);
     }
 
     const result = await response.json();

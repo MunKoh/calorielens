@@ -1,18 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { OpenAI } from 'openai';
 
-// Vercel 환경 변수에서 설정값 가져오기
-const apiKey = process.env.CHATAI_PAT;
-const baseURL = process.env.OPENAI_API_BASE;
-const model = process.env.OPENAI_MODEL || 'gpt-4o';
-
-// OpenAI 클라이언트 초기화 (서버 측)
-// 'dangerouslyAllowBrowser' 옵션이 없는 것이 중요합니다.
-const openai = new OpenAI({
-  apiKey: apiKey,
-  baseURL: baseURL,
-});
-
 export default async function handler(
   req: VercelRequest,
   res: VercelResponse
@@ -20,15 +8,27 @@ export default async function handler(
   // POST 요청만 허용
   if (req.method !== 'POST') {
     res.setHeader('Allow', ['POST']);
-    return res.status(405).end(`Method ${req.method} Not Allowed`);
+    return res.status(405).json({ error: `Method ${req.method} Not Allowed` });
   }
 
   try {
+    // Vercel 환경 변수에서 설정값 가져오기
+    const apiKey = process.env.CHATAI_PAT;
+    const baseURL = process.env.OPENAI_API_BASE;
+    const model = process.env.OPENAI_MODEL || 'gpt-4o';
+
     // API 키와 기본 URL이 설정되었는지 확인
     if (!apiKey || !baseURL) {
       console.error('서버에 API 키 또는 기본 URL이 설정되지 않았습니다.');
       return res.status(500).json({ error: '서버 구성 오류: AI 서비스가 올바르게 설정되지 않았습니다.' });
     }
+
+    // OpenAI 클라이언트 초기화 (서버 측)
+    // 초기화를 try 블록 안으로 이동하여 환경 변수 누락 시에도 에러를 잡을 수 있도록 함
+    const openai = new OpenAI({
+      apiKey: apiKey,
+      baseURL: baseURL,
+    });
 
     const { image: base64Image } = req.body;
 
