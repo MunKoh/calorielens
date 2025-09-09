@@ -1,4 +1,5 @@
 import { FoodItem } from '../components/ResultsDisplay';
+import { OpenAI } from 'openai';
 import { v4 as uuidv4 } from 'uuid';
 
 // UUID를 사용한 안전한 ID 생성 함수
@@ -78,53 +79,76 @@ const analyzeFoodFromFilename = (filename: string): FoodItem[] => {
   }];
 };
 
+// OpenAI 클라이언트 초기화 (선택적)
+const initializeOpenAI = () => {
+  // REACT_APP_CHATAI_PAT 환경변수를 OPENAI API 키로 사용
+  const apiKey = process.env.REACT_APP_CHATAI_PAT;
+  
+  if (!apiKey) {
+    console.info('OpenAI API 키가 없어서 스마트 패턴 매칭을 사용합니다.');
+    return null;
+  }
 
-// AI를 사용한 실제 음식 분석 (백엔드 API 호출 방식으로 변경)
+  return new OpenAI({
+    apiKey: apiKey,
+    baseURL: process.env.REACT_APP_OPENAI_API_BASE,
+    dangerouslyAllowBrowser: true
+  });
+};
+
+// AI를 사용한 실제 음식 분석
 const analyzeWithAI = async (imageFile: File): Promise<FoodItem[]> => {
+  const openai = initializeOpenAI();
+  
+  // openai 객체가 null인 경우 처리
+  if (!openai) {
+    console.error('OpenAI 클라이언트 초기화 실패: API 키가 없거나 잘못되었습니다.');
+    throw new Error('API 키 설정이 필요합니다. 관리자에게 문의해주세요.');
+  }
+
   try {
     // 이미지를 base64로 변환
     const base64Image = await convertImageToBase64(imageFile);
     
-    console.log('서버에 AI 분석 요청 시작...');
+    console.log('AI 분석 시작...');
     
-    // 자체 백엔드 API(/api/analyzeImage)에 요청
-    const response = await fetch('/api/analyzeImage', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ image: base64Image }),
+    // ref 폴더 설정을 참고한 모델 사용
+    const model = process.env.REACT_APP_OPENAI_MODEL || 'gpt-4o';
+    
+    const response = await openai.chat.completions.create({
+      model: model,
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "text",
+              text: `모든 음식을 구분하세요. 각 음식의 종류를 구분하세요. 양을 구분하세요. 칼로리와 영양소 (탄수화물, 단백질, 지방)을 분석하세요.\n\n다음 JSON 형식으로 응답해주세요. 응답은 반드시 유효한 JSON 배열이어야 합니다:\n\n[\n  {\n    "name": "음식명",\n    "calories": 칼로리수치(숫자),\n    "quantity": "분량 설명",\n    "grams": 그램수(숫자),\n    "carbs": 탄수화물(숫자),\n    "protein": 단백질(숫자),\n    "fat": 지방(숫자),\n    "confidence": 신뢰도(0-100 숫자)\n  }\n]\n\n주의사항:\n- 한국어로 음식명을 작성해주세요\n- 모든 영양소는 그램 단위로 표시해주세요\n- 여러 음식이 보이면 각각 별도 객체로 분석해주세요\n- 신뢰도는 0-100 사이 숫자로 표시해주세요\n- JSON 외의 다른 텍스트는 포함하지 마세요`
+            },
+            {
+              type: "image_url",
+              image_url: {
+                url: base64Image
+              }
+            }
+          ]
+        }
+      ],
+      max_tokens: 1500,
+      temperature: 0.1
     });
 
-    if (!response.ok) {
-      // 서버에서 보낸 에러가 JSON 형태인지 확인
-      const contentType = response.headers.get('content-type');
-      let errorMessage = '서버에서 분석 요청을 처리하는 중 오류가 발생했습니다.';
-      
-      if (contentType && contentType.includes('application/json')) {
-        const errorData = await response.json();
-        errorMessage = errorData.error || errorMessage;
-      } else {
-        // JSON이 아닌 경우, 텍스트로 에러를 읽음
-        errorMessage = await response.text();
-      }
-      
-      console.error('서버 응답 오류:', errorMessage);
-      throw new Error(errorMessage);
-    }
-
-    const result = await response.json();
-    const content = result.content;
-
+    const content = response.choices[0]?.message?.content;
     if (!content) {
       throw new Error('AI 응답이 비어있습니다.');
     }
 
-    console.log('서버로부터 받은 AI 분석 응답:', content);
+    console.log('AI 분석 응답:', content);
 
     // JSON 파싱 개선 - 응답에서 JSON 부분만 추출
     let jsonContent = content.trim();
     
+    // 응답에 다른 텍스트가 포함된 경우 JSON 부분만 추출
     const jsonStart = jsonContent.indexOf('[');
     const jsonEnd = jsonContent.lastIndexOf(']') + 1;
     
@@ -150,17 +174,32 @@ const analyzeWithAI = async (imageFile: File): Promise<FoodItem[]> => {
       confidence: item.confidence
     }));
 
-    console.log('최종 분석 결과:', foodItems);
+    console.log('AI 분석 결과:', foodItems);
     return foodItems;
 
   } catch (error) {
-    console.error('AI 분석 과정 중 오류 발생:', error);
+    console.error('AI 분석 중 오류 발생:', error);
+    console.error('Error details:', {
+      name: error instanceof Error ? error.name : 'Unknown',
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : 'No stack trace'
+    });
     
+    // 더 친화적인 에러 메시지 제공
     if (error instanceof Error) {
-        throw new Error(error.message);
+      if (error.message.includes('API 키') || error.message.includes('401') || error.message.includes('unauthorized')) {
+        throw new Error('AI 서비스 설정이 필요합니다. 관리자에게 문의해주세요.');
+      } else if (error.message.includes('network') || error.message.includes('fetch') || error.message.includes('NetworkError')) {
+        throw new Error('네트워크 연결을 확인해주세요.');
+      } else if (error.message.includes('JSON') || error.message.includes('parse') || error.message.includes('SyntaxError')) {
+        console.error('JSON 파싱 실패. AI 응답이 올바른 형식이 아닙니다.');
+        throw new Error('AI 응답 형식이 올바르지 않습니다. 다시 시도해주세요.');
+      } else if (error.message.includes('rate limit') || error.message.includes('429')) {
+        throw new Error('요청이 너무 많습니다. 잠시 후 다시 시도해주세요.');
+      }
     }
     
-    throw new Error('음식 분석 중 알 수 없는 오류가 발생했습니다.');
+    throw new Error('음식 분석 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
   }
 };
 
@@ -175,7 +214,7 @@ export const analyzeFood = async (imageFile: File): Promise<FoodItem[]> => {
   }
   
   // AI 분석 실행
-  console.log('새로운 백엔드 API를 통해 AI 분석 시작...');
+  console.log('AI 분석 시작...');
   return await analyzeWithAI(imageFile);
 };
 
