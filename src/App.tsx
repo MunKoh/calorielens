@@ -62,6 +62,14 @@ const App: React.FC = () => {
   useEffect(() => {
     const initializeApp = async () => {
       try {
+        console.log('앱 초기화 시작...');
+        
+        // Supabase 환경변수 확인
+        if (!process.env.REACT_APP_SUPABASE_URL || !process.env.REACT_APP_SUPABASE_ANON_KEY) {
+          console.warn('Supabase 환경변수가 설정되지 않음. 로컬 모드로 실행됩니다.');
+          return;
+        }
+        
         // 1. Supabase 스키마 초기화
         await initializeSupabaseSchema();
         
@@ -76,6 +84,8 @@ const App: React.FC = () => {
         
         console.log('앱 초기화 완료');
       } catch (error) {
+        console.error('앱 초기화 실패:', error);
+        // 에러가 발생해도 앱이 크래시되지 않도록 방어
         const appError = ErrorHandler.handle(error, '앱 초기화');
         ErrorHandler.logError(appError);
         NotificationService.error(appError.message);
