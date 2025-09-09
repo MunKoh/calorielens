@@ -1,0 +1,9 @@
+{
+  "buildCommand": "npm ci && npm run build",
+  "framework": "create-react-app",
+  "functions": {
+    "src/pages/api/**/*.js": {
+      "runtime": "nodejs18.x"
+    }
+  }
+}
