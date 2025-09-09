@@ -66,7 +66,21 @@ const App: React.FC = () => {
         
         // Supabase 환경변수 확인
         if (!process.env.REACT_APP_SUPABASE_URL || !process.env.REACT_APP_SUPABASE_ANON_KEY) {
-          console.warn('Supabase 환경변수가 설정되지 않음. 로컬 모드로 실행됩니다.');
+          console.warn('Supabase 환경변수가 설정되지 않음. 로컬 저장소 모드로 실행됩니다.');
+          console.info('Vercel에서 환경변수를 설정하려면: Settings → Environment Variables');
+          
+          // 로컬 저장소에서 기존 데이터 로드
+          const localHistory = localStorage.getItem('calorielens_history');
+          if (localHistory) {
+            try {
+              const parsedHistory = JSON.parse(localHistory);
+              setHistory(parsedHistory);
+              const todaysIntake = calculateDailyIntake(parsedHistory);
+              setDailyIntake(todaysIntake);
+            } catch (error) {
+              console.error('로컬 히스토리 로드 실패:', error);
+            }
+          }
           return;
         }
         
